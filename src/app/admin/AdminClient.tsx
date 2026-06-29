@@ -508,11 +508,11 @@ export default function AdminClient({
                       </div>
                     )}
 
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <button
                         type="submit"
                         disabled={isPending}
-                        className="w-full bg-black text-white text-xs tracking-[0.25em] py-5 font-bold hover:bg-stone transition-all duration-300 disabled:opacity-50 cursor-pointer mt-4"
+                        className="w-full bg-black text-white text-sm tracking-[0.3em] py-6 font-bold hover:bg-stone transition-all duration-300 disabled:opacity-50 cursor-pointer mt-6"
                       >
                         {isPending
                           ? editingProduct
@@ -531,7 +531,7 @@ export default function AdminClient({
                           setFormError(null)
                           setFormSuccess(false)
                         }}
-                        className="w-full bg-gray-200 text-black text-xs tracking-[0.25em] py-5 font-bold hover:bg-gray-300 transition-all duration-300 cursor-pointer"
+                        className="w-full bg-gray-200 text-black text-sm tracking-[0.3em] py-6 font-bold hover:bg-gray-300 transition-all duration-300 cursor-pointer"
                       >
                         CANCEL
                       </button>
@@ -554,7 +554,7 @@ export default function AdminClient({
                         setFormError(null)
                         setFormSuccess(false)
                       }}
-                      className="bg-black text-white text-[10px] tracking-[0.25em] font-bold px-6 py-4 hover:bg-stone transition-all duration-500 cursor-pointer"
+                      className="bg-black text-white text-xs md:text-sm tracking-[0.25em] font-bold px-8 py-5 hover:bg-stone transition-all duration-550 cursor-pointer shadow-md"
                     >
                       + ADD NEW PRODUCT
                     </button>
