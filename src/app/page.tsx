@@ -1,65 +1,106 @@
-import Image from "next/image";
+import Image from "next/image"
+import Link from "next/link"
+import HeroSection from "@/components/HeroSection"
+import ProductGrid from "@/components/ProductGrid"
+import ParallaxImage from "@/components/ParallaxImage"
+import FadeIn from "@/components/FadeIn"
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <>
+      <HeroSection />
+
+      <ProductGrid />
+
+      <section className="relative">
+        <ParallaxImage speed={0.2} className="h-[60vh] md:h-[80vh]">
+          <Image
+            src="/images/editorial.png"
+            alt="AURÈLE editorial"
+            fill
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/50" />
+        </ParallaxImage>
+
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6">
+          <FadeIn>
+            <p className="text-white/60 text-[11px] tracking-[0.4em] uppercase mb-4">
+              The Art of Adornment
+            </p>
+            <h2 className="text-white font-serif text-3xl md:text-5xl lg:text-6xl tracking-tight mb-6">
+              Crafted to Endure
+            </h2>
+            <p className="text-white/50 text-sm md:text-base font-light max-w-lg mx-auto leading-relaxed mb-10">
+              Every piece in the AURÈLE collection is meticulously handcrafted by
+              master artisans, using only the finest precious metals and
+              ethically sourced gemstones.
+            </p>
+            <Link
+              href="/#collection"
+              className="inline-block border border-white/30 text-white text-[11px] tracking-[0.3em] px-10 py-4 hover:bg-white hover:text-black transition-all duration-500"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              EXPLORE
+            </Link>
+          </FadeIn>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="px-6 md:px-12 lg:px-20 py-24 md:py-32">
+        <div className="max-w-[1400px] mx-auto">
+          <FadeIn>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 text-center">
+              <div>
+                <div className="w-12 h-12 mx-auto mb-6 flex items-center justify-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                </div>
+                <h3 className="text-[12px] tracking-[0.3em] uppercase mb-3">
+                  Complimentary Shipping
+                </h3>
+                <p className="text-gray-400 text-sm font-light">
+                  Free worldwide delivery on all orders, beautifully packaged
+                  in our signature boxes.
+                </p>
+              </div>
+
+              <div>
+                <div className="w-12 h-12 mx-auto mb-6 flex items-center justify-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </div>
+                <h3 className="text-[12px] tracking-[0.3em] uppercase mb-3">
+                  Lifetime Guarantee
+                </h3>
+                <p className="text-gray-400 text-sm font-light">
+                  Every AURÈLE piece comes with our lifetime craftsmanship
+                  guarantee and certificate.
+                </p>
+              </div>
+
+              <div>
+                <div className="w-12 h-12 mx-auto mb-6 flex items-center justify-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8">
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                  </svg>
+                </div>
+                <h3 className="text-[12px] tracking-[0.3em] uppercase mb-3">
+                  Ethically Sourced
+                </h3>
+                <p className="text-gray-400 text-sm font-light">
+                  All gemstones and precious metals are responsibly sourced
+                  and fully traceable.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
         </div>
-      </main>
-    </div>
-  );
+      </section>
+    </>
+  )
 }
