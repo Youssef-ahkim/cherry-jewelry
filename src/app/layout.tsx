@@ -19,11 +19,11 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "AURÈLE — Luxury Jewelry | Timeless Elegance",
+  title: "CHERRY JEWELRY — Luxury Jewelry | Timeless Elegance",
   description:
-    "Discover handcrafted luxury jewelry by AURÈLE. Exquisite rings, necklaces, bracelets, and earrings designed for the discerning collector. Timeless elegance, modern craftsmanship.",
+    "Discover handcrafted luxury jewelry by CHERRY JEWELRY. Exquisite rings, necklaces, bracelets, and earrings designed for the discerning collector. Timeless elegance, modern craftsmanship.",
   openGraph: {
-    title: "AURÈLE — Luxury Jewelry",
+    title: "CHERRY JEWELRY — Luxury Jewelry",
     description:
       "Handcrafted luxury jewelry for the modern connoisseur. Each piece tells a story of timeless elegance.",
     type: "website",
@@ -39,6 +39,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${playfair.variable} ${inter.variable} antialiased`}
+      data-scroll-behavior="smooth"
     >
       <body className="min-h-screen flex flex-col font-sans">
         <CartProvider>
