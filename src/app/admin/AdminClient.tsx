@@ -20,6 +20,7 @@ export default function AdminClient({
   const [ordersState, setOrdersState] = useState(initialOrders)
   const [productsState, setProductsState] = useState(initialProducts)
   const [editingProduct, setEditingProduct] = useState<any | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [formSuccess, setFormSuccess] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -183,6 +184,11 @@ export default function AdminClient({
           setProductsState((prev) => [...prev, newProduct])
           ;(e.target as HTMLFormElement).reset()
         }
+
+        setTimeout(() => {
+          setIsFormOpen(false)
+          setFormSuccess(false)
+        }, 1500)
       } else {
         setFormError(res.error || "Failed to save product.")
       }
@@ -359,202 +365,270 @@ export default function AdminClient({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-12"
             >
-              <div className="lg:col-span-7 bg-white border border-gray-200 p-8 md:p-10">
-                <h3 className="font-serif text-2xl mb-6">
-                  {editingProduct ? `Edit Product` : "Add New Product"}
-                </h3>
-
-                <form
-                  onSubmit={handleFormSubmit}
-                  key={editingProduct ? editingProduct.slug : "new"}
-                  className="space-y-6"
-                >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                        Product Name
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        defaultValue={editingProduct ? editingProduct.name : ""}
-                        className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300"
-                        placeholder="e.g. Blossom Diamond Ring"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                        Price (USD)
-                      </label>
-                      <input
-                        type="number"
-                        name="price"
-                        required
-                        step="0.01"
-                        min="1"
-                        defaultValue={editingProduct ? editingProduct.price : ""}
-                        className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300"
-                        placeholder="e.g. 3500"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                      Category
-                    </label>
-                    <select
-                      name="category"
-                      required
-                      defaultValue={editingProduct ? editingProduct.category : "Rings"}
-                      className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 cursor-pointer"
-                    >
-                      <option value="Rings">Rings</option>
-                      <option value="Necklaces">Necklaces</option>
-                      <option value="Bracelets">Bracelets</option>
-                      <option value="Earrings">Earrings</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      required
-                      rows={3}
-                      defaultValue={editingProduct ? editingProduct.description : ""}
-                      className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 resize-none"
-                      placeholder="Enter a descriptive summary of the luxury piece..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                      Product Details (One per line)
-                    </label>
-                    <textarea
-                      name="details"
-                      required
-                      rows={4}
-                      defaultValue={
-                        editingProduct
-                          ? (() => {
-                              try {
-                                return JSON.parse(editingProduct.details).join("\n")
-                              } catch {
-                                return editingProduct.details
-                              }
-                            })()
-                          : ""
-                      }
-                      className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 resize-none"
-                      placeholder="e.g.&#10;18k Rose Gold&#10;0.5ct Brilliant Cut Pink Diamond&#10;Handcrafted in New York"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                      Upload Product Images {editingProduct && "(Optional)"}
-                    </label>
-                    <input
-                      type="file"
-                      name="images"
-                      accept="image/*"
-                      multiple
-                      required={!editingProduct}
-                      className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 cursor-pointer"
-                    />
-                    <p className="text-[10px] text-gray-400 mt-2 font-light">
-                      {editingProduct
-                        ? "Select new image files to replace the existing ones, or leave blank to keep them."
-                        : "Select one or multiple image files from your PC."}
-                    </p>
-                  </div>
-
-                  {formError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3">
-                      {formError}
-                    </div>
-                  )}
-
-                  {formSuccess && (
-                    <div className="bg-green-50 border border-green-200 text-green-700 text-xs px-4 py-3">
-                      Product saved successfully! It is now live in the collection.
-                    </div>
-                  )}
-
-                  <div className="space-y-3">
+              {isFormOpen ? (
+                <div className="max-w-3xl mx-auto bg-white border border-gray-200 p-8 md:p-12 shadow-sm">
+                  <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
                     <button
-                      type="submit"
-                      disabled={isPending}
-                      className="w-full bg-black text-white text-xs tracking-[0.25em] py-5 font-bold hover:bg-stone transition-all duration-300 disabled:opacity-50 cursor-pointer mt-4"
+                      onClick={() => {
+                        setIsFormOpen(false)
+                        setEditingProduct(null)
+                        setFormError(null)
+                        setFormSuccess(false)
+                      }}
+                      className="text-[10px] tracking-[0.25em] text-gray-400 hover:text-black font-bold uppercase transition-colors cursor-pointer"
                     >
-                      {isPending
-                        ? editingProduct
-                          ? "UPDATING PRODUCT..."
-                          : "ADDING PRODUCT..."
-                        : editingProduct
-                        ? "UPDATE PRODUCT DETAILS"
-                        : "ADD PRODUCT TO SYSTEM"}
+                      ← BACK TO CATALOG
                     </button>
+                    <h3 className="font-serif text-xl">
+                      {editingProduct ? "Edit Product Details" : "Create New Product"}
+                    </h3>
+                  </div>
 
-                    {editingProduct && (
+                  <form
+                    onSubmit={handleFormSubmit}
+                    key={editingProduct ? editingProduct.slug : "new"}
+                    className="space-y-6"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
+                          Product Name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          defaultValue={editingProduct ? editingProduct.name : ""}
+                          className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300"
+                          placeholder="e.g. Blossom Diamond Ring"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
+                          Price (USD)
+                        </label>
+                        <input
+                          type="number"
+                          name="price"
+                          required
+                          step="0.01"
+                          min="1"
+                          defaultValue={editingProduct ? editingProduct.price : ""}
+                          className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300"
+                          placeholder="e.g. 3500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
+                        Category
+                      </label>
+                      <select
+                        name="category"
+                        required
+                        defaultValue={editingProduct ? editingProduct.category : "Rings"}
+                        className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 cursor-pointer"
+                      >
+                        <option value="Rings">Rings</option>
+                        <option value="Necklaces">Necklaces</option>
+                        <option value="Bracelets">Bracelets</option>
+                        <option value="Earrings">Earrings</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
+                        Description
+                      </label>
+                      <textarea
+                        name="description"
+                        required
+                        rows={3}
+                        defaultValue={editingProduct ? editingProduct.description : ""}
+                        className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 resize-none"
+                        placeholder="Enter a descriptive summary of the luxury piece..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
+                        Product Details (One per line)
+                      </label>
+                      <textarea
+                        name="details"
+                        required
+                        rows={4}
+                        defaultValue={
+                          editingProduct
+                            ? (() => {
+                                try {
+                                  return JSON.parse(editingProduct.details).join("\n")
+                                } catch {
+                                  return editingProduct.details
+                                }
+                              })()
+                            : ""
+                        }
+                        className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 resize-none"
+                        placeholder="e.g.&#10;18k Rose Gold&#10;0.5ct Brilliant Cut Pink Diamond&#10;Handcrafted in New York"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
+                        Upload Product Images {editingProduct && "(Optional)"}
+                      </label>
+                      <input
+                        type="file"
+                        name="images"
+                        accept="image/*"
+                        multiple
+                        required={!editingProduct}
+                        className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 cursor-pointer"
+                      />
+                      <p className="text-[10px] text-gray-400 mt-2 font-light">
+                        {editingProduct
+                          ? "Select new image files to replace the existing ones, or leave blank to keep them."
+                          : "Select one or multiple image files from your PC."}
+                      </p>
+                    </div>
+
+                    {formError && (
+                      <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3">
+                        {formError}
+                      </div>
+                    )}
+
+                    {formSuccess && (
+                      <div className="bg-green-50 border border-green-200 text-green-700 text-xs px-4 py-3">
+                        Product saved successfully! It is now live in the collection.
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <button
+                        type="submit"
+                        disabled={isPending}
+                        className="w-full bg-black text-white text-xs tracking-[0.25em] py-5 font-bold hover:bg-stone transition-all duration-300 disabled:opacity-50 cursor-pointer mt-4"
+                      >
+                        {isPending
+                          ? editingProduct
+                            ? "UPDATING PRODUCT..."
+                            : "ADDING PRODUCT..."
+                          : editingProduct
+                          ? "UPDATE PRODUCT DETAILS"
+                          : "ADD PRODUCT TO SYSTEM"}
+                      </button>
+
                       <button
                         type="button"
-                        onClick={() => setEditingProduct(null)}
+                        onClick={() => {
+                          setIsFormOpen(false)
+                          setEditingProduct(null)
+                          setFormError(null)
+                          setFormSuccess(false)
+                        }}
                         className="w-full bg-gray-200 text-black text-xs tracking-[0.25em] py-5 font-bold hover:bg-gray-300 transition-all duration-300 cursor-pointer"
                       >
-                        CANCEL EDITING
+                        CANCEL
                       </button>
-                    )}
-                  </div>
-                </form>
-              </div>
-
-              <div className="lg:col-span-5 space-y-6">
-                <div className="bg-white border border-gray-200 p-6">
-                  <h3 className="font-serif text-xl mb-4">Active Database Products</h3>
-                  <div className="divide-y divide-gray-150 max-h-[600px] overflow-y-auto pr-2">
-                    {productsState.length === 0 ? (
-                      <p className="text-gray-400 text-xs font-light py-4">No database products live yet.</p>
-                    ) : (
-                      productsState.map((product) => (
-                        <div key={product.slug} className="py-4 flex justify-between items-start gap-4">
-                          <div>
-                            <p className="text-sm font-semibold">{product.name}</p>
-                            <p className="text-[10px] text-gray-400 mt-0.5 uppercase tracking-wider">{product.category}</p>
-                            <p className="text-xs font-serif text-gold mt-1.5">{formatPrice(Number(product.price))}</p>
-                          </div>
-                          <div className="flex gap-3 shrink-0">
-                            <button
-                              onClick={() => {
-                                setEditingProduct(product)
-                                window.scrollTo({ top: 0, behavior: "smooth" })
-                              }}
-                              className="text-[10px] tracking-wider text-blue-600 hover:underline font-bold uppercase cursor-pointer"
-                            >
-                              Edit
-                            </button>
-                            <span className="text-gray-200">|</span>
-                            <button
-                              onClick={() => handleDeleteProduct(product.slug)}
-                              className="text-[10px] tracking-wider text-red-600 hover:underline font-bold uppercase cursor-pointer"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                    </div>
+                  </form>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-8">
+                  <div className="flex justify-between items-center pb-6 border-b border-gray-200">
+                    <div>
+                      <h3 className="font-serif text-2xl">Product Catalog</h3>
+                      <p className="text-gray-400 text-xs mt-1">
+                        Manage {productsState.length} items currently live on the storefront
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setEditingProduct(null)
+                        setIsFormOpen(true)
+                        setFormError(null)
+                        setFormSuccess(false)
+                      }}
+                      className="bg-black text-white text-[10px] tracking-[0.25em] font-bold px-6 py-4 hover:bg-stone transition-all duration-500 cursor-pointer"
+                    >
+                      + ADD NEW PRODUCT
+                    </button>
+                  </div>
+
+                  {productsState.length === 0 ? (
+                    <div className="bg-white border border-gray-200 py-24 text-center">
+                      <p className="text-gray-400 text-sm font-light">No products in catalog. Click Add New to start.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                      {productsState.map((product) => {
+                        let firstImage = "/images/hero.png"
+                        try {
+                          const parsed = JSON.parse(product.images)
+                          if (parsed && parsed.length > 0) {
+                            firstImage = parsed[0]
+                          }
+                        } catch {
+                          if (product.images) {
+                            firstImage = product.images.split(",")[0]?.trim() || "/images/hero.png"
+                          }
+                        }
+
+                        return (
+                          <div
+                            key={product.slug}
+                            className="bg-white border border-gray-200 flex flex-col group"
+                          >
+                            <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-50 border-b border-gray-100">
+                              <img
+                                src={firstImage}
+                                alt={product.name}
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                              />
+                            </div>
+                            <div className="p-5 flex-1 flex flex-col justify-between">
+                              <div>
+                                <span className="text-[9px] tracking-widest text-gray-400 uppercase font-semibold">
+                                  {product.category}
+                                </span>
+                                <h4 className="text-sm font-semibold text-gray-800 mt-1 truncate">
+                                  {product.name}
+                                </h4>
+                                <p className="text-xs font-serif text-gold mt-1.5 font-medium">
+                                  {formatPrice(Number(product.price))}
+                                </p>
+                              </div>
+                              <div className="border-t border-gray-100 pt-4 mt-5 flex justify-between items-center gap-4">
+                                <button
+                                  onClick={() => {
+                                    setEditingProduct(product)
+                                    setIsFormOpen(true)
+                                    window.scrollTo({ top: 0, behavior: "smooth" })
+                                  }}
+                                  className="text-[9px] tracking-widest font-bold text-blue-600 hover:text-blue-800 transition-colors uppercase cursor-pointer"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteProduct(product.slug)}
+                                  className="text-[9px] tracking-widest font-bold text-red-650 hover:text-red-800 transition-colors uppercase cursor-pointer"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -562,3 +636,4 @@ export default function AdminClient({
     </div>
   )
 }
+
