@@ -78,11 +78,13 @@ export default function AdminClient({
         const detailsArray = detailsRaw.split("\n").map((s) => s.trim()).filter(Boolean)
 
         if (editingProduct) {
+          const newSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
           setProductsState((prev) =>
             prev.map((p) =>
               p.slug === editingProduct.slug
                 ? {
                     ...p,
+                    slug: newSlug,
                     name,
                     price,
                     category,

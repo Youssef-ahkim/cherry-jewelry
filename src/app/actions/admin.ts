@@ -133,6 +133,16 @@ export async function updateProduct(
       .map((item) => item.trim())
       .filter(Boolean)
 
+    const newSlug = name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+
+    if (!newSlug) {
+      return { success: false, error: "Invalid product name format for slug generation." }
+    }
+
     let imagesArray: string[] = []
     const existing = await db.select().from(dbProducts).where(eq(dbProducts.slug, slug)).limit(1)
     if (existing.length > 0) {
@@ -163,6 +173,7 @@ export async function updateProduct(
     await db
       .update(dbProducts)
       .set({
+        slug: newSlug,
         name,
         price: price.toFixed(2),
         category,
@@ -175,6 +186,7 @@ export async function updateProduct(
     revalidatePath("/")
     revalidatePath("/admin")
     revalidatePath(`/product/${slug}`)
+    revalidatePath(`/product/${newSlug}`)
     return { success: true }
   } catch (error) {
     console.error("Update product error:", error)
