@@ -69,8 +69,8 @@ export default function Navigation() {
               </Link>
             ))}
 
-            <Link href="/" className="mx-8 focus:outline-none">
-              <h1 className="text-white text-lg md:text-xl lg:text-2xl font-serif tracking-[0.18em] whitespace-nowrap hover:text-gold transition-colors duration-300">
+            <Link href="/" className="mx-8 focus:outline-none cursor-default">
+              <h1 className="text-white text-lg md:text-xl lg:text-2xl font-serif font-medium tracking-[0.25em] lg:tracking-[0.3em] whitespace-nowrap">
                 CHERRY JEWELRY
               </h1>
             </Link>
@@ -86,8 +86,8 @@ export default function Navigation() {
             ))}
           </div>
 
-          <Link href="/" className="lg:hidden absolute left-1/2 -translate-x-1/2 focus:outline-none">
-            <h1 className="text-white text-base md:text-lg font-serif tracking-[0.18em] whitespace-nowrap">
+          <Link href="/" className="lg:hidden absolute left-1/2 -translate-x-1/2 focus:outline-none cursor-default">
+            <h1 className="text-white text-base md:text-lg font-serif font-medium tracking-[0.25em] whitespace-nowrap">
               CHERRY JEWELRY
             </h1>
           </Link>
