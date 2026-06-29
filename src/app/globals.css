@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-ivory: #FAFAF5;
+  --color-ivory: #FAF5F0;
   --color-charcoal: #1A1A1A;
   --color-stone: #2A2A2A;
-  --color-cream: #F5F0EB;
-  --color-gold: #C9A96E;
-  --color-gold-light: #D4B97A;
+  --color-cream: #FAF0E6;
+  --color-gold: #D88D8E;
+  --color-gold-light: #F3C1C2;
   --color-black: #000000;
   --color-white: #FFFFFF;
   --color-gray-100: #F7F7F7;
@@ -134,17 +134,12 @@ img {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-white);
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--color-gray-300);
-}
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gray-500);
-}

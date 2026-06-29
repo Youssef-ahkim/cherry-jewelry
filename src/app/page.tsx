@@ -4,13 +4,16 @@ import HeroSection from "@/components/HeroSection"
 import ProductGrid from "@/components/ProductGrid"
 import ParallaxImage from "@/components/ParallaxImage"
 import FadeIn from "@/components/FadeIn"
+import { getAllProducts } from "@/lib/products"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const productsList = await getAllProducts()
+
   return (
     <>
       <HeroSection />
 
-      <ProductGrid />
+      <ProductGrid products={productsList} />
 
       <section className="relative">
         <ParallaxImage speed={0.2} className="h-[60vh] md:h-[80vh]">

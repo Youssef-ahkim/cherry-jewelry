@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import { products, getProductBySlug, getAllSlugs } from "@/lib/products"
+import { getProductBySlug, getAllSlugs, getAllProducts } from "@/lib/products"
 import ProductDetailClient from "@/app/product/[slug]/ProductDetailClient"
 
 interface PageProps {
@@ -8,12 +8,13 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }))
+  const slugs = await getAllSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const product = getProductBySlug(slug)
+  const product = await getProductBySlug(slug)
   if (!product) return {}
 
   return {
@@ -29,11 +30,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProductPage({ params }: PageProps) {
   const { slug } = await params
-  const product = getProductBySlug(slug)
+  const product = await getProductBySlug(slug)
 
   if (!product) {
     notFound()
   }
 
-  return <ProductDetailClient product={product} />
+  const allProducts = await getAllProducts()
+  const recommendations = allProducts
+    .filter((p) => p.slug !== slug)
+    .slice(0, 3)
+
+  return <ProductDetailClient product={product} recommendations={recommendations} />
 }
+
+

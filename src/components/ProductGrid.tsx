@@ -1,10 +1,10 @@
 "use client"
 
-import { products } from "@/lib/products"
+import { Product } from "@/types"
 import ProductCard from "./ProductCard"
 import FadeIn from "./FadeIn"
 
-export default function ProductGrid() {
+export default function ProductGrid({ products }: { products: Product[] }) {
   return (
     <section id="collection" className="px-6 md:px-12 lg:px-20 py-24 md:py-32">
       <FadeIn>
@@ -29,12 +29,16 @@ export default function ProductGrid() {
           </div>
         ))}
 
-        <div className="sm:col-span-2 lg:col-span-2">
-          <ProductCard product={products[3]} index={3} />
-        </div>
-        <div>
-          <ProductCard product={products[4]} index={4} />
-        </div>
+        {products.length > 3 && (
+          <div className="sm:col-span-2 lg:col-span-2">
+            <ProductCard product={products[3]} index={3} />
+          </div>
+        )}
+        {products.length > 4 && (
+          <div>
+            <ProductCard product={products[4]} index={4} />
+          </div>
+        )}
 
         {products.slice(5).map((product, i) => (
           <div key={product.slug}>
@@ -45,3 +49,4 @@ export default function ProductGrid() {
     </section>
   )
 }
+

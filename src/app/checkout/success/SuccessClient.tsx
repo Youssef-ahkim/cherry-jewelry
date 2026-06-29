@@ -23,14 +23,14 @@ function SuccessContent() {
               delay: 0.2,
             }}
             className="w-20 h-20 rounded-full flex items-center justify-center border-2 shrink-0"
-            style={{ borderColor: "#C9A96E" }}
+            style={{ borderColor: "#D88D8E" }}
           >
             <motion.svg
               width="36"
               height="36"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#C9A96E"
+              stroke="#D88D8E"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"

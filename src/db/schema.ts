@@ -36,3 +36,14 @@ export const orderItems = mysqlTable("order_items", {
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   quantity: int("quantity").notNull(),
 })
+
+export const dbProducts = mysqlTable("products", {
+  slug: varchar("slug", { length: 100 }).primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  details: text("details").notNull(),
+  images: text("images").notNull(),
+})
+

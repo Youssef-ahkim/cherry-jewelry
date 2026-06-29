@@ -9,14 +9,14 @@ import { useCart } from "@/components/CartProvider"
 import { formatPrice } from "@/lib/utils"
 import FadeIn from "@/components/FadeIn"
 import ProductCard from "@/components/ProductCard"
-import { products } from "@/lib/products"
-
 interface ProductDetailClientProps {
   product: Product
+  recommendations: Product[]
 }
 
 export default function ProductDetailClient({
   product,
+  recommendations,
 }: ProductDetailClientProps) {
   const { addItem, openCart } = useCart()
   const [added, setAdded] = useState(false)
@@ -36,10 +36,6 @@ export default function ProductDetailClient({
   const toggleAccordion = (panel: string) => {
     setActiveAccordion(activeAccordion === panel ? null : panel)
   }
-
-  const recommendations = products
-    .filter((p) => p.slug !== product.slug)
-    .slice(0, 3)
 
   const showSizes = product.category === "Rings"
 
