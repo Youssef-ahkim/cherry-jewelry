@@ -70,7 +70,7 @@ export default function HeroSection() {
         >
           <Link
             href="/#collection"
-            className="mt-10 inline-block border border-white/40 text-white text-[11px] tracking-[0.3em] px-10 py-4 hover:bg-white hover:text-black transition-all duration-500"
+            className="mt-10 inline-block !border !border-white/40 !text-white text-[11px] tracking-[0.3em] px-10 py-4 hover:!bg-white hover:!text-black transition-all duration-500"
           >
             SHOP THE COLLECTION
           </Link>

@@ -42,7 +42,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/#collection"
-              className="inline-block border border-white/30 text-white text-[11px] tracking-[0.3em] px-10 py-4 hover:bg-white hover:text-black transition-all duration-500"
+              className="inline-block !border !border-white/30 !text-white text-[11px] tracking-[0.3em] px-10 py-4 hover:!bg-white hover:!text-black transition-all duration-500"
             >
               EXPLORE
             </Link>
