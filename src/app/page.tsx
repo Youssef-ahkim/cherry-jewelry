@@ -19,7 +19,7 @@ export default async function HomePage() {
         <ParallaxImage speed={0.2} className="h-[60vh] md:h-[80vh]">
           <Image
             src="/images/editorial.png"
-            alt="AURÈLE editorial"
+            alt="CHERRY JEWELRY editorial"
             fill
             className="object-cover"
             sizes="100vw"
@@ -36,7 +36,7 @@ export default async function HomePage() {
               Crafted to Endure
             </h2>
             <p className="text-white/50 text-sm md:text-base font-light max-w-lg mx-auto leading-relaxed mb-10">
-              Every piece in the AURÈLE collection is meticulously handcrafted by
+              Every piece in the CHERRY JEWELRY collection is meticulously handcrafted by
               master artisans, using only the finest precious metals and
               ethically sourced gemstones.
             </p>
@@ -81,7 +81,7 @@ export default async function HomePage() {
                   Lifetime Guarantee
                 </h3>
                 <p className="text-gray-400 text-sm font-light">
-                  Every AURÈLE piece comes with our lifetime craftsmanship
+                  Every CHERRY JEWELRY piece comes with our lifetime craftsmanship
                   guarantee and certificate.
                 </p>
               </div>

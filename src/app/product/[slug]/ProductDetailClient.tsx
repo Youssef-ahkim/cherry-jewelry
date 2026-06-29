@@ -49,7 +49,7 @@ export default function ProductDetailClient({
           ← BACK TO COLLECTION
         </Link>
         <span className="text-[10px] tracking-[0.3em] text-gray-350">
-          AURÈLE ATELIER
+          CHERRY JEWELRY
         </span>
       </div>
 
@@ -277,7 +277,7 @@ export default function ProductDetailClient({
                       >
                         <div className="pb-6 space-y-4">
                           <p className="text-sm text-gray-500 font-light leading-relaxed">
-                            Every AURÈLE creation arrives in our signature leather case, packaged within our secure, anonymous shipping box.
+                            Every CHERRY JEWELRY creation arrives in our signature leather case, packaged within our secure, anonymous shipping box.
                           </p>
                           <ul className="space-y-2 text-xs text-gray-400 font-light">
                             <li>• Free express courier worldwide (fully tracked)</li>
