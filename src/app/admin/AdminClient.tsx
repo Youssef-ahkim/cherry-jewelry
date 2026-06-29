@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { addProduct, updateOrderStatus } from "@/app/actions/admin"
+import { addProduct, updateOrderStatus, updateProduct, deleteProduct } from "@/app/actions/admin"
 import { formatPrice } from "@/lib/utils"
 
 interface AdminClientProps {
@@ -19,6 +19,7 @@ export default function AdminClient({
   const [activeTab, setActiveTab] = useState<"orders" | "products">("orders")
   const [ordersState, setOrdersState] = useState(initialOrders)
   const [productsState, setProductsState] = useState(initialProducts)
+  const [editingProduct, setEditingProduct] = useState<any | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [formSuccess, setFormSuccess] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -36,6 +37,22 @@ export default function AdminClient({
     }
   }
 
+  const handleDeleteProduct = async (slug: string) => {
+    if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+      return
+    }
+
+    const res = await deleteProduct(slug)
+    if (res.success) {
+      setProductsState((prev) => prev.filter((p) => p.slug !== slug))
+      if (editingProduct?.slug === slug) {
+        setEditingProduct(null)
+      }
+    } else {
+      alert(res.error || "Failed to delete product")
+    }
+  }
+
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setFormError(null)
@@ -44,21 +61,54 @@ export default function AdminClient({
     const formData = new FormData(e.currentTarget)
 
     startTransition(async () => {
-      const res = await addProduct(null, formData)
+      let res
+      if (editingProduct) {
+        res = await updateProduct(editingProduct.slug, null, formData)
+      } else {
+        res = await addProduct(null, formData)
+      }
+
       if (res.success) {
         setFormSuccess(true)
         const name = formData.get("name") as string
-        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
-        const newProduct = {
-          slug,
-          name,
-          price: parseFloat(formData.get("price") as string).toFixed(2),
-          category: formData.get("category") as string,
+        const price = parseFloat(formData.get("price") as string).toFixed(2)
+        const category = formData.get("category") as string
+        const description = formData.get("description") as string
+        const detailsRaw = formData.get("details") as string
+        const detailsArray = detailsRaw.split("\n").map((s) => s.trim()).filter(Boolean)
+
+        if (editingProduct) {
+          setProductsState((prev) =>
+            prev.map((p) =>
+              p.slug === editingProduct.slug
+                ? {
+                    ...p,
+                    name,
+                    price,
+                    category,
+                    description,
+                    details: JSON.stringify(detailsArray),
+                  }
+                : p
+            )
+          )
+          setEditingProduct(null)
+        } else {
+          const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+          const newProduct = {
+            slug,
+            name,
+            price,
+            category,
+            description,
+            details: JSON.stringify(detailsArray),
+            images: JSON.stringify([]),
+          }
+          setProductsState((prev) => [...prev, newProduct])
+          ;(e.target as HTMLFormElement).reset()
         }
-        setProductsState((prev) => [...prev, newProduct])
-        ;(e.target as HTMLFormElement).reset()
       } else {
-        setFormError(res.error || "Failed to add product.")
+        setFormError(res.error || "Failed to save product.")
       }
     })
   }
@@ -236,9 +286,15 @@ export default function AdminClient({
               className="grid grid-cols-1 lg:grid-cols-12 gap-12"
             >
               <div className="lg:col-span-7 bg-white border border-gray-200 p-8 md:p-10">
-                <h3 className="font-serif text-2xl mb-6">Add New Product</h3>
+                <h3 className="font-serif text-2xl mb-6">
+                  {editingProduct ? `Edit Product` : "Add New Product"}
+                </h3>
 
-                <form onSubmit={handleFormSubmit} className="space-y-6">
+                <form
+                  onSubmit={handleFormSubmit}
+                  key={editingProduct ? editingProduct.slug : "new"}
+                  className="space-y-6"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
@@ -248,6 +304,7 @@ export default function AdminClient({
                         type="text"
                         name="name"
                         required
+                        defaultValue={editingProduct ? editingProduct.name : ""}
                         className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300"
                         placeholder="e.g. Blossom Diamond Ring"
                       />
@@ -263,6 +320,7 @@ export default function AdminClient({
                         required
                         step="0.01"
                         min="1"
+                        defaultValue={editingProduct ? editingProduct.price : ""}
                         className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300"
                         placeholder="e.g. 3500"
                       />
@@ -276,6 +334,7 @@ export default function AdminClient({
                     <select
                       name="category"
                       required
+                      defaultValue={editingProduct ? editingProduct.category : "Rings"}
                       className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 cursor-pointer"
                     >
                       <option value="Rings">Rings</option>
@@ -293,6 +352,7 @@ export default function AdminClient({
                       name="description"
                       required
                       rows={3}
+                      defaultValue={editingProduct ? editingProduct.description : ""}
                       className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 resize-none"
                       placeholder="Enter a descriptive summary of the luxury piece..."
                     />
@@ -306,6 +366,17 @@ export default function AdminClient({
                       name="details"
                       required
                       rows={4}
+                      defaultValue={
+                        editingProduct
+                          ? (() => {
+                              try {
+                                return JSON.parse(editingProduct.details).join("\n")
+                              } catch {
+                                return editingProduct.details
+                              }
+                            })()
+                          : ""
+                      }
                       className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 resize-none"
                       placeholder="e.g.&#10;18k Rose Gold&#10;0.5ct Brilliant Cut Pink Diamond&#10;Handcrafted in New York"
                     />
@@ -313,18 +384,20 @@ export default function AdminClient({
 
                   <div>
                     <label className="block text-[10px] tracking-[0.2em] text-black font-bold uppercase mb-3">
-                      Upload Product Images
+                      Upload Product Images {editingProduct && "(Optional)"}
                     </label>
                     <input
                       type="file"
                       name="images"
                       accept="image/*"
                       multiple
-                      required
+                      required={!editingProduct}
                       className="w-full border-2 border-gray-300 px-5 py-4 text-sm font-light bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all duration-300 cursor-pointer"
                     />
                     <p className="text-[10px] text-gray-400 mt-2 font-light">
-                      Select one or multiple image files from your PC.
+                      {editingProduct
+                        ? "Select new image files to replace the existing ones, or leave blank to keep them."
+                        : "Select one or multiple image files from your PC."}
                     </p>
                   </div>
 
@@ -336,34 +409,70 @@ export default function AdminClient({
 
                   {formSuccess && (
                     <div className="bg-green-50 border border-green-200 text-green-700 text-xs px-4 py-3">
-                      Product added successfully! It is now live in the collection.
+                      Product saved successfully! It is now live in the collection.
                     </div>
                   )}
 
-                  <button
-                    type="submit"
-                    disabled={isPending}
-                    className="w-full bg-black text-white text-xs tracking-[0.25em] py-5 font-bold hover:bg-stone transition-all duration-300 disabled:opacity-50 cursor-pointer mt-4"
-                  >
-                    {isPending ? "ADDING PRODUCT..." : "ADD PRODUCT TO SYSTEM"}
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      type="submit"
+                      disabled={isPending}
+                      className="w-full bg-black text-white text-xs tracking-[0.25em] py-5 font-bold hover:bg-stone transition-all duration-300 disabled:opacity-50 cursor-pointer mt-4"
+                    >
+                      {isPending
+                        ? editingProduct
+                          ? "UPDATING PRODUCT..."
+                          : "ADDING PRODUCT..."
+                        : editingProduct
+                        ? "UPDATE PRODUCT DETAILS"
+                        : "ADD PRODUCT TO SYSTEM"}
+                    </button>
+
+                    {editingProduct && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct(null)}
+                        className="w-full bg-gray-200 text-black text-xs tracking-[0.25em] py-5 font-bold hover:bg-gray-300 transition-all duration-300 cursor-pointer"
+                      >
+                        CANCEL EDITING
+                      </button>
+                    )}
+                  </div>
                 </form>
               </div>
 
               <div className="lg:col-span-5 space-y-6">
                 <div className="bg-white border border-gray-200 p-6">
                   <h3 className="font-serif text-xl mb-4">Active Database Products</h3>
-                  <div className="divide-y divide-gray-150 max-h-[500px] overflow-y-auto pr-2">
+                  <div className="divide-y divide-gray-150 max-h-[600px] overflow-y-auto pr-2">
                     {productsState.length === 0 ? (
                       <p className="text-gray-400 text-xs font-light py-4">No database products live yet.</p>
                     ) : (
                       productsState.map((product) => (
-                        <div key={product.slug} className="py-3 flex justify-between items-center">
+                        <div key={product.slug} className="py-4 flex justify-between items-start gap-4">
                           <div>
-                            <p className="text-sm font-medium">{product.name}</p>
+                            <p className="text-sm font-semibold">{product.name}</p>
                             <p className="text-[10px] text-gray-400 mt-0.5 uppercase tracking-wider">{product.category}</p>
+                            <p className="text-xs font-serif text-gold mt-1.5">{formatPrice(Number(product.price))}</p>
                           </div>
-                          <span className="text-sm font-serif text-gold">{formatPrice(Number(product.price))}</span>
+                          <div className="flex gap-3 shrink-0">
+                            <button
+                              onClick={() => {
+                                setEditingProduct(product)
+                                window.scrollTo({ top: 0, behavior: "smooth" })
+                              }}
+                              className="text-[10px] tracking-wider text-blue-600 hover:underline font-bold uppercase cursor-pointer"
+                            >
+                              Edit
+                            </button>
+                            <span className="text-gray-200">|</span>
+                            <button
+                              onClick={() => handleDeleteProduct(product.slug)}
+                              className="text-[10px] tracking-wider text-red-600 hover:underline font-bold uppercase cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       ))
                     )}
