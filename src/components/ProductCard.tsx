@@ -65,7 +65,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </motion.div>
         </div>
 
-        <div className="mt-4 space-y-1">
+        <div className="mt-4 space-y-1 text-center">
           <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase">
             {product.category}
           </p>
